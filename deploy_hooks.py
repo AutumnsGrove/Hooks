@@ -67,6 +67,58 @@ def load_settings():
         return {}
 
 
+def detect_hook_event_type(hook_path):
+    """
+    Detect hook event type from filename or file content.
+
+    Naming conventions:
+    - pre-tool-* or pretool-* → PreToolUse
+    - post-tool-* or posttool-* → PostToolUse
+    - prompt-* or user-prompt-* → UserPromptSubmit
+    - session-start-* → SessionStart
+    - session-end-* → SessionEnd
+    - subagent-stop-* → SubagentStop
+
+    Or use metadata comment in file:
+    # CLAUDE_HOOK_EVENT: PreToolUse
+    """
+    hook_name = hook_path.stem.lower()
+
+    # Try to read event type from file metadata
+    try:
+        with open(hook_path, "r") as f:
+            first_lines = f.read(500)  # Read first 500 chars
+            for line in first_lines.split("\n")[:10]:  # Check first 10 lines
+                if "CLAUDE_HOOK_EVENT:" in line:
+                    # Extract event type from comment
+                    event_type = line.split("CLAUDE_HOOK_EVENT:")[1].strip()
+                    # Remove any trailing comment characters
+                    event_type = event_type.rstrip("*/-#").strip()
+                    return event_type
+    except Exception:
+        pass  # Fall back to filename detection
+
+    # Filename-based detection
+    if "pre-tool" in hook_name or "pretool" in hook_name:
+        return "PreToolUse"
+    elif "post-tool" in hook_name or "posttool" in hook_name:
+        return "PostToolUse"
+    elif "prompt" in hook_name or "user-prompt" in hook_name:
+        return "UserPromptSubmit"
+    elif "session-start" in hook_name:
+        return "SessionStart"
+    elif "session-end" in hook_name:
+        return "SessionEnd"
+    elif "subagent-stop" in hook_name or "subagent" in hook_name:
+        return "SubagentStop"
+    else:
+        # Default to PreToolUse for safety
+        print(
+            f"  ⚠ No event type detected for {hook_path.name}, defaulting to PreToolUse"
+        )
+        return "PreToolUse"
+
+
 def update_settings(deployed_hooks):
     """Update settings.json with hook configurations."""
     settings = load_settings()
@@ -81,16 +133,8 @@ def update_settings(deployed_hooks):
     for hook_path in deployed_hooks:
         hook_name = hook_path.stem  # filename without extension
 
-        # Determine hook type from filename or content
-        if "pre-tool" in hook_name.lower() or "grep-to-rg" in hook_name.lower():
-            event_type = "PreToolUse"
-        elif "post-tool" in hook_name.lower():
-            event_type = "PostToolUse"
-        elif "prompt" in hook_name.lower():
-            event_type = "UserPromptSubmit"
-        else:
-            # Default to PreToolUse for safety
-            event_type = "PreToolUse"
+        # Detect event type
+        event_type = detect_hook_event_type(hook_path)
 
         # Register the hook
         if event_type not in hook_configs:

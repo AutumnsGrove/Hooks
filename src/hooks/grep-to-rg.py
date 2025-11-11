@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# CLAUDE_HOOK_EVENT: PreToolUse
+"""Hook to automatically convert grep commands to ripgrep (rg) for better performance."""
 import json
 import sys
 

@@ -159,12 +159,26 @@ uv run python deploy_hooks.py
 
 **3. Restart Claude Code** to activate the hooks
 
-**Hook naming convention:**
-- `*pre-tool*` → Registers as PreToolUse event
-- `*post-tool*` → Registers as PostToolUse event
-- `*prompt*` → Registers as UserPromptSubmit event
+**Hook event type detection:**
+
+The deployment script detects hook types using two methods:
+
+1. **Metadata in file** (recommended):
+   ```python
+   #!/usr/bin/env python3
+   # CLAUDE_HOOK_EVENT: PreToolUse
+   ```
+
+2. **Filename conventions** (fallback):
+   - `*pre-tool*` or `*pretool*` → PreToolUse
+   - `*post-tool*` or `*posttool*` → PostToolUse
+   - `*prompt*` or `*user-prompt*` → UserPromptSubmit
+   - `*session-start*` → SessionStart
+   - `*session-end*` → SessionEnd
+   - `*subagent-stop*` → SubagentStop
 
 The deployment script automatically:
+- Auto-detects hook event types
 - Copies hooks to `~/.claude/hooks/`
 - Updates `~/.claude/settings.json`
 - Makes hooks executable
