@@ -27,10 +27,15 @@ A curated collection of hooks and associated tools designed for Claude Code. Enh
    ./ClaudeUsage/pre_commit_hooks/install_hooks.sh
    ```
 
-3. **Configure Claude Code hooks:**
-   - Copy desired hooks from this repository to your Claude Code settings
-   - Hooks are configured in your Claude Code user settings file
-   - See [Claude Code documentation](https://docs.claude.com/en/docs/claude-code) for configuration details
+3. **Deploy Claude Code hooks:**
+   ```bash
+   cd ~/Projects/Hooks
+   ./deploy.sh
+   ```
+   This automatically:
+   - Copies hooks from `src/hooks/` to `~/.claude/hooks/`
+   - Updates `~/.claude/settings.json` to register them
+   - Preserves your existing hooks and settings
 
 ### Using Across Machines
 
@@ -51,6 +56,8 @@ git pull origin main
 ```
 Hooks/
 ├── CLAUDE.md                   # Project instructions
+├── deploy_hooks.py             # Deployment script for Claude Code hooks
+├── deploy.sh                   # Quick deploy wrapper
 ├── ClaudeUsage/                # Comprehensive workflow guides
 │   ├── pre_commit_hooks/       # Git hooks for code quality & security
 │   │   ├── install_hooks.sh    # Interactive installer (auto-detects language)
@@ -64,7 +71,9 @@ Hooks/
 │   ├── git_guide.md            # Git workflow and conventional commits
 │   ├── secrets_management.md  # API key handling
 │   └── ... (18 total guides)
-└── src/                        # Custom hook implementations
+└── src/
+    └── hooks/                  # Claude Code hooks
+        └── grep-to-rg.py       # Example: Auto-convert grep to ripgrep
 ```
 
 ---
@@ -88,11 +97,15 @@ Hooks/
 
 ### Claude Code Hooks
 
-*Coming soon - examples of Claude Code event hooks:*
-- Tool call validation hooks
-- User prompt preprocessing hooks
-- Response post-processing hooks
-- Custom automation triggers
+**Currently available:**
+- `grep-to-rg.py` - Automatically converts `grep` commands to `ripgrep` (rg) for better performance
+
+**Hook event types supported:**
+- `PreToolUse` - Intercepts and modifies tool calls before execution
+- `PostToolUse` - Processes tool results after execution
+- `UserPromptSubmit` - Preprocesses user prompts
+
+*More hooks coming soon!*
 
 ---
 
@@ -127,20 +140,37 @@ cd ~/Projects/YourProject
 # - Dependency auto-updater
 ```
 
-### Configuring Claude Code Hooks
+### Developing and Deploying Claude Code Hooks
 
-Edit your Claude Code settings to add hooks:
-
-```json
-{
-  "hooks": {
-    "user-prompt-submit": "~/Projects/Hooks/src/validate_prompt.sh",
-    "tool-call-before": "~/Projects/Hooks/src/log_tool_call.sh"
-  }
-}
+**1. Create a new hook:**
+```bash
+# Add your hook to src/hooks/
+cd ~/Projects/Hooks
+# Create your hook file (Python, Shell, etc.)
+# Example: src/hooks/my-custom-hook.py
 ```
 
-See Claude Code documentation for available hook events and configuration.
+**2. Deploy to Claude Code:**
+```bash
+./deploy.sh
+# Or use Python directly:
+uv run python deploy_hooks.py
+```
+
+**3. Restart Claude Code** to activate the hooks
+
+**Hook naming convention:**
+- `*pre-tool*` → Registers as PreToolUse event
+- `*post-tool*` → Registers as PostToolUse event
+- `*prompt*` → Registers as UserPromptSubmit event
+
+The deployment script automatically:
+- Copies hooks to `~/.claude/hooks/`
+- Updates `~/.claude/settings.json`
+- Makes hooks executable
+- Preserves existing hooks and settings
+
+See [Claude Code documentation](https://docs.claude.com/en/docs/claude-code) for hook API details.
 
 ---
 
