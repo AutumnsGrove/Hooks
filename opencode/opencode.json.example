@@ -1,0 +1,28 @@
+{
+  "plugins": [
+    "./opencode/plugins/grep-to-rg.ts",
+    "./opencode/plugins/uv-enforcer.ts",
+    "./opencode/plugins/auto-formatter.ts",
+    "./opencode/plugins/conventional-commit-validator.ts"
+  ],
+  "settings": {
+    "auto_formatter": {
+      "enabled": true,
+      "formatters": {
+        "python": "black",
+        "javascript": "prettier",
+        "typescript": "prettier",
+        "go": "gofmt",
+        "rust": "rustfmt"
+      }
+    },
+    "uv_enforcer": {
+      "enabled": true,
+      "allow_escape_hatch": true
+    },
+    "commit_validator": {
+      "enabled": true,
+      "allow_alternative_format": true
+    }
+  }
+}
