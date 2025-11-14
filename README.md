@@ -161,17 +161,25 @@ Hooks/
 
 | Hook/Plugin | Claude Code | OpenCode | Purpose |
 |-------------|-------------|----------|---------|
-| **grep-to-rg** | ✅ Implemented | ✅ Implemented | Convert grep → rg for performance |
+| **grep-to-rg** | ✅ | ✅ | Convert grep → rg for performance |
+| **uv-enforcer** | ✅ | ✅ | Enforce UV package manager usage |
+| **auto-formatter** | ✅ | ✅ | Auto-format code (Black, Prettier, gofmt, rustfmt) |
+| **conventional-commit-validator** | ✅ | ✅ | Enforce commit message format |
+| **command-tracker** | ✅ | ✅ | Log all tool calls to SQLite database |
+| **session-tracker** | ✅ | ✅ | Capture session analytics (duration, tools, files) |
+| **subagent-tracker** | ✅ | ❌ | Track subagent completions (Claude Code only) |
+| **todo-extractor** | ✅ | ✅ | Extract TODOs with priority detection |
+| **rm-protection** | ✅ | ✅ | Move files to trash instead of deleting |
+| **test-runner** | ✅ | ✅ | Auto-run tests when test files change |
 
-**Coming soon** (see [`IDEAS.md`](./IDEAS.md) for 20+ planned hooks):
-- Auto-formatters (Black, Prettier, gofmt)
-- Smart TODO extractor
-- UV enforcement
-- Conventional commit validator
-- rm -rf protection
-- Auto test runner
-- Session analytics
-- And more...
+**Total**: 10 hooks implemented (9 available in both systems)
+
+**Still planned** (see [`IDEAS.md`](./IDEAS.md) for details):
+- Live website screenshot optimizer
+- NPM vulnerability checker
+- Smart PR creator
+- Session end TTS notifications
+- And 10+ more...
 
 See [`MIGRATION_ANALYSIS.md`](./MIGRATION_ANALYSIS.md) for full migration status.
 
