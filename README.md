@@ -1,79 +1,139 @@
-# Hooks - Claude Code Hook Collection
+# Hooks - AI Coding Assistant Hooks & Plugins
 
-A curated collection of hooks and associated tools designed for Claude Code. Enhance your development workflow with event-driven automation, code quality checks, and security scanning.
+A comprehensive collection of hooks and plugins for **Claude Code** and **OpenCode**, plus traditional git hooks for code quality and security. Enhance your development workflow with event-driven automation across multiple AI coding assistants.
 
 ## What This Is
 
-**Claude Code Hooks** are shell commands that execute in response to events like tool calls, user prompts, and other actions within Claude Code. This repository provides a collection of useful hooks and the tools they depend on, making it easy to sync and reuse across different development machines.
+This repository provides **dual-support** for both Claude Code hooks and OpenCode plugins, allowing you to use the same automation concepts with either AI coding assistant.
 
-**What's included:**
-- Claude Code event hooks (tool call hooks, prompt hooks, etc.)
-- Git pre-commit hooks for code quality and security
-- Security scanners and code formatters
-- Multi-language support (Python, JavaScript, Go, Shell)
+**📦 What's included:**
+- **Claude Code Hooks** - Event-driven scripts for Claude Code (PreToolUse, PostToolUse, etc.)
+- **OpenCode Plugins** - TypeScript plugins for OpenCode (migrated equivalents)
+- **Git Hooks** - Traditional pre-commit hooks for code quality and security (work with any workflow)
+- **Multi-language support** - Python, JavaScript, TypeScript, Go, Shell
+
+## 🎯 Choose Your System
+
+### Claude Code Hooks
+- ✅ Python, Shell, or JavaScript hooks
+- ✅ More lifecycle events (SubagentStop, PreCompact)
+- ✅ Rich environment variables
+- ✅ Mature ecosystem
+- 📖 See: [`claude-code/README.md`](./claude-code/README.md)
+
+### OpenCode Plugins
+- ✅ TypeScript/JavaScript plugins
+- ✅ Native async/await
+- ✅ Built-in zx for shell commands
+- ✅ Familiar to web developers
+- 📖 See: [`opencode/README.md`](./opencode/README.md)
+
+### Migration Between Systems
+- 📊 **Migration Analysis**: [`MIGRATION_ANALYSIS.md`](./MIGRATION_ANALYSIS.md)
+- 📖 **Migration Guide**: [`docs/migration-guide.md`](./docs/migration-guide.md)
+- ⚖️ **Comparison**: [`docs/comparison.md`](./docs/comparison.md)
 
 ## 🚀 Quick Start
 
-### Installation
+### 1. Clone Repository
 
-1. **Clone this repository:**
-   ```bash
-   git clone https://github.com/AutumnsGrove/Hooks.git ~/Projects/Hooks
-   ```
+```bash
+git clone https://github.com/AutumnsGrove/Hooks.git ~/Projects/Hooks
+cd ~/Projects/Hooks
+```
 
-2. **Install git hooks (optional but recommended):**
-   ```bash
-   cd ~/Projects/Hooks
-   ./ClaudeUsage/pre_commit_hooks/install_hooks.sh
-   ```
+### 2. Choose Your System(s)
 
-3. **Deploy Claude Code hooks:**
-   ```bash
-   cd ~/Projects/Hooks
-   ./deploy.sh
-   ```
-   This automatically:
-   - Copies hooks from `src/hooks/` to `~/.claude/hooks/`
-   - Updates `~/.claude/settings.json` to register them
-   - Preserves your existing hooks and settings
+#### Option A: Claude Code Hooks
 
-### Using Across Machines
+```bash
+cd claude-code/
+./deploy.sh
+```
 
-Since this is a git repository, you can easily sync hooks across machines:
+This automatically:
+- Copies hooks from `claude-code/hooks/` to `~/.claude/hooks/`
+- Updates `~/.claude/settings.json` to register them
+- Preserves your existing hooks and settings
+
+**📖 Full guide**: [`claude-code/README.md`](./claude-code/README.md)
+
+#### Option B: OpenCode Plugins
+
+```bash
+cd opencode/
+npm install
+
+# Configure in your project's opencode.json
+{
+  "plugins": [
+    "path/to/Hooks/opencode/plugins/grep-to-rg.ts"
+  ]
+}
+```
+
+**📖 Full guide**: [`opencode/README.md`](./opencode/README.md)
+
+#### Option C: Git Hooks (Optional, Works with Both)
+
+```bash
+./ClaudeUsage/pre_commit_hooks/install_hooks.sh
+```
+
+Installs traditional git hooks for code quality and security.
+
+### 3. Sync Across Machines
+
+Since this is a git repository, easily sync hooks across machines:
 
 ```bash
 # On a new machine
 cd ~/Projects/Hooks
 git pull origin main
-
-# Copy/link hooks to your projects as needed
+cd claude-code/ && ./deploy.sh  # For Claude Code
+# or
+cd opencode/ && npm install      # For OpenCode
 ```
 
 ---
 
-## 📁 What's Included
+## 📁 Repository Structure
 
 ```
 Hooks/
-├── CLAUDE.md                   # Project instructions
-├── deploy_hooks.py             # Deployment script for Claude Code hooks
-├── deploy.sh                   # Quick deploy wrapper
-├── ClaudeUsage/                # Comprehensive workflow guides
-│   ├── pre_commit_hooks/       # Git hooks for code quality & security
-│   │   ├── install_hooks.sh    # Interactive installer (auto-detects language)
+├── claude-code/                # Claude Code hooks
+│   ├── hooks/                  # Hook scripts (Python, Shell)
+│   │   └── grep-to-rg.py       # Convert grep → rg
+│   ├── deploy_hooks.py         # Deployment script
+│   ├── deploy.sh               # Quick deploy wrapper
+│   └── README.md               # Claude Code setup guide
+│
+├── opencode/                   # OpenCode plugins
+│   ├── plugins/                # Plugin implementations (TypeScript)
+│   │   ├── grep-to-rg.ts       # Convert grep → rg
+│   │   └── ... (coming soon)
+│   ├── package.json            # Dependencies
+│   ├── tsconfig.json           # TypeScript config
+│   └── README.md               # OpenCode setup guide
+│
+├── docs/                       # Migration & comparison docs
+│   ├── migration-guide.md      # How to migrate hooks to plugins
+│   ├── comparison.md           # Claude Code vs OpenCode
+│   └── claude-code-hooks-research.md  # Community research
+│
+├── ClaudeUsage/                # Guides & git hooks
+│   ├── pre_commit_hooks/       # Traditional git hooks
+│   │   ├── install_hooks.sh    # Interactive installer
 │   │   ├── pre-commit-secrets-scanner  # Prevents API key leaks
 │   │   ├── pre-commit-python   # Black, Ruff, pytest
 │   │   ├── pre-commit-javascript  # Prettier, ESLint
-│   │   ├── pre-commit-go       # gofmt, golangci-lint
-│   │   ├── pre-push            # Run tests before push
-│   │   ├── post-checkout       # Auto-update deps on branch switch
-│   │   └── ... (8 total hooks)
-│   ├── git_guide.md            # Git workflow and conventional commits
-│   ├── secrets_management.md  # API key handling
-│   └── ... (18 total guides)
-└── src/
-    └── hooks/                  # Claude Code hooks
-        └── grep-to-rg.py       # Example: Auto-convert grep to ripgrep
+│   │   └── ... (11 total hooks)
+│   └── ... (18 workflow guides)
+│
+├── MIGRATION_ANALYSIS.md       # Migration feasibility analysis
+├── IDEAS.md                    # 20+ hook/plugin ideas
+├── CLAUDE.md                   # Project instructions
+└── README.md                   # This file
 ```
 
 ---
@@ -95,17 +155,33 @@ Hooks/
 - `commit-msg` - Validates conventional commit format
 - `prepare-commit-msg` - Adds templates to commit messages
 
-### Claude Code Hooks
+### Claude Code Hooks & OpenCode Plugins
 
 **Currently available:**
-- `grep-to-rg.py` - Automatically converts `grep` commands to `ripgrep` (rg) for better performance
 
-**Hook event types supported:**
-- `PreToolUse` - Intercepts and modifies tool calls before execution
-- `PostToolUse` - Processes tool results after execution
-- `UserPromptSubmit` - Preprocesses user prompts
+| Hook/Plugin | Claude Code | OpenCode | Purpose |
+|-------------|-------------|----------|---------|
+| **grep-to-rg** | ✅ | ✅ | Convert grep → rg for performance |
+| **uv-enforcer** | ✅ | ✅ | Enforce UV package manager usage |
+| **auto-formatter** | ✅ | ✅ | Auto-format code (Black, Prettier, gofmt, rustfmt) |
+| **conventional-commit-validator** | ✅ | ✅ | Enforce commit message format |
+| **command-tracker** | ✅ | ✅ | Log all tool calls to SQLite database |
+| **session-tracker** | ✅ | ✅ | Capture session analytics (duration, tools, files) |
+| **subagent-tracker** | ✅ | ❌ | Track subagent completions (Claude Code only) |
+| **todo-extractor** | ✅ | ✅ | Extract TODOs with priority detection |
+| **rm-protection** | ✅ | ✅ | Move files to trash instead of deleting |
+| **test-runner** | ✅ | ✅ | Auto-run tests when test files change |
 
-*More hooks coming soon!*
+**Total**: 10 hooks implemented (9 available in both systems)
+
+**Still planned** (see [`IDEAS.md`](./IDEAS.md) for details):
+- Live website screenshot optimizer
+- NPM vulnerability checker
+- Smart PR creator
+- Session end TTS notifications
+- And 10+ more...
+
+See [`MIGRATION_ANALYSIS.md`](./MIGRATION_ANALYSIS.md) for full migration status.
 
 ---
 
@@ -144,7 +220,7 @@ cd ~/Projects/YourProject
 
 **1. Create a new hook:**
 ```bash
-# Add your hook to src/hooks/
+# Add your hook to claude-code/hooks/
 cd ~/Projects/Hooks
 # Create your hook file (Python, Shell, etc.)
 # Example: src/hooks/my-custom-hook.py
