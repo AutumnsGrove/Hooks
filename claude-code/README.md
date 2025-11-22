@@ -18,6 +18,7 @@ Claude Code hooks are scripts that run in response to specific events during a C
 claude-code/
 ├── hooks/              # Hook scripts
 │   ├── grep-to-rg.py   # Convert grep → rg for performance
+│   ├── npm-to-pnpm.py  # Convert npm → pnpm for efficiency
 │   └── ...
 ├── deploy_hooks.py     # Deployment script
 ├── deploy.sh           # Quick deployment wrapper
@@ -68,6 +69,39 @@ rg "function" src/*.py
 ```
 
 **Requirements**: Install ripgrep (`brew install ripgrep` or `apt install ripgrep`)
+
+### npm-to-pnpm (PreToolUse)
+**Purpose**: Automatically converts `npm` commands to `pnpm` equivalents for better performance and disk efficiency
+
+**How it works**:
+- Intercepts Bash tool calls
+- Detects `npm` commands using word boundaries
+- Intelligently converts to pnpm equivalents
+- Handles special cases like `npm install <pkg>` → `pnpm add <pkg>`
+
+**Example conversions**:
+```bash
+# Package installation
+npm install           → pnpm install
+npm i                 → pnpm install
+npm install lodash    → pnpm add lodash
+npm i -D typescript   → pnpm add -D typescript
+npm install -g pnpm   → pnpm add -g pnpm
+
+# Package removal
+npm uninstall lodash  → pnpm remove lodash
+npm un express        → pnpm remove express
+
+# Scripts
+npm run dev           → pnpm run dev
+npm test              → pnpm test
+npm start             → pnpm start
+npm run build         → pnpm run build
+```
+
+**Requirements**: Install pnpm (`npm install -g pnpm` or `corepack enable`)
+
+**Note**: If you need to use npm directly (e.g., `npm init`, `npx`), run the command in your terminal outside of Claude Code, or temporarily disable the hook.
 
 ## Configuration
 
@@ -218,4 +252,4 @@ To add a new hook:
 
 ---
 
-*Last updated: 2025-11-14*
+*Last updated: 2025-11-22*
